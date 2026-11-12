@@ -1,0 +1,13 @@
+-- Notes for many deals in one call.
+-- IN (...) on Parent_Id works. OR chains in the WHERE clause did not work for Notes.
+
+select Parent_Id, Note_Title, Note_Content, Created_Time
+from Notes
+where Parent_Id in ('DEAL_ID_1','DEAL_ID_2','DEAL_ID_3')
+limit 200;
+
+-- Owner-filtered deal queries: filter on the owner's user ID, not the name.
+-- select id, Deal_Name, Stage from Deals where Owner.id = 'OWNER_USER_ID' limit 200;
+--
+-- Stage names are matched exactly. Stages containing an en dash will return zero
+-- rows if you type a hyphen.
