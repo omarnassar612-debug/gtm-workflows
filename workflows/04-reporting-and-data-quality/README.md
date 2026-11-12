@@ -24,9 +24,9 @@ Sales reviews ran on gut feel and on numbers that did not reconcile. Counts of l
 
 Closed means the deal currently sits in Sold - Pending Ops Approval, Ops Approved, Ready for Install, In Production, Completed - Pending Closeout, Invoice Sent or Paid & Closed. Lost includes Disqualified. Everything else is open.
 
-Lead to booking rose 24 points from April to July. Booking to close fell from 48.8% to 20.2% across the April to June cohorts, which have almost fully resolved. More prospects reached an advisor and a smaller share bought, so the coaching focus moved from intake to the appointment stage.
+What it showed: from April to July, lead to booking rose from 58.6% to 83.0%, while booking to close fell from 48.8% to 20.2% on the April to June cohorts, which have almost fully resolved. Lead flow and intake were not the constraint. The appointment stage was, so that is where coaching moved.
 
-Two limits on the read. July is not final: about two thirds of its deals were still open when this was pulled, and on June's aging pattern it lands nearer 20% than 13.7%. April is flattered: its closes include repair jobs, from a month with heavy repair quoting. August onward has not been calculated here yet. The queries in [`coql/monthly_funnel_by_stage.coql`](coql/monthly_funnel_by_stage.coql) produce it.
+Two limits on the read. July is not final: about two thirds of its deals were still open when this was pulled, and on June's aging pattern it lands nearer 20% than 13.7%. April is flattered: its closes include repair jobs, from a month with heavy repair quoting. August onward is not published here. The queries in [`coql/monthly_funnel_by_stage.coql`](coql/monthly_funnel_by_stage.coql) rerun any month.
 
 ## Data quality findings
 
