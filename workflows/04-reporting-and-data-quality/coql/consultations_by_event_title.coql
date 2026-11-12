@@ -1,0 +1,13 @@
+-- Client consultations from the Events module.
+-- Recurring internal series (audits, training) dominate raw counts and hit the API limit.
+-- Filter on the title, then hand-classify rebookings, repair visits and test records.
+
+select id, Event_Title, Start_DateTime, Owner
+from Events
+where Start_DateTime between '2026-06-01T00:00:00-04:00' and '2026-06-20T23:59:59-04:00'
+  and Event_Title like '%onsult%'
+limit 200;
+
+-- If a recurring series boundary truncates the result, run narrower windows
+-- (for example 06-01 to 06-20, then 06-21 to 06-30) and combine.
+-- Deal-creation counts overstate appointments. Count from Events.
