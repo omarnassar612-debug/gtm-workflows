@@ -3,10 +3,13 @@
 // changes to the post-consultation stage. Argument mapping: dealId = ${Deals.Id}
 //
 // Creates one CRM task per touch on the deal, assigned to the deal owner.
+// 12 touches over 90 days: front-loaded in week one, then a close-the-file pair on day 14,
+// then low-pressure check-backs on days 30, 60 and 90.
 //
 // Sanitized reference version. The touch copy is replaced by the purpose of each touch.
-// Offsets below are the original 14-day cadence. Add your later touches to the list.
-// Not compiled as published. Check field API names against your own CRM before use.
+// Rebuilt from the production design for this repo. It has not been compiled or run
+// as published. Check field API names against your own CRM before use, and paste it into
+// the Deluge editor to compile it before attaching it to a workflow rule.
 //
 // Deluge notes:
 //   - Plain ASCII only in strings and comments.
@@ -80,8 +83,36 @@ touches.add(t);
 t = Map();
 t.put("day",14);
 t.put("priority","Normal");
-t.put("subject","T8 Day 14 Close the file");
-t.put("script","Close-the-file email. Quote stays on record. Move deal to future timeline.");
+t.put("subject","T8 Day 14 Close-the-file text");
+t.put("script","Short, dignified text: closing the file today, quote stays on record, no pressure. Send this first.");
+touches.add(t);
+
+t = Map();
+t.put("day",14);
+t.put("priority","Normal");
+t.put("subject","T9 Day 14 Close-the-file email");
+t.put("script","Same-day email: no hard feelings, quote stays on record, they can come back any time without starting over. After sending, move the deal to Future Timeline.");
+touches.add(t);
+
+t = Map();
+t.put("day",30);
+t.put("priority","Normal");
+t.put("subject","T10 Day 30 Check-back text");
+t.put("script","Low-pressure text that follows through on the promise to check back: is the project still on the radar, or did timing shift?");
+touches.add(t);
+
+t = Map();
+t.put("day",60);
+t.put("priority","Normal");
+t.put("subject","T11 Day 60 Quote-on-file email");
+t.put("script","Email reminding them the quote is still on file and they do not need to start over. One reply away.");
+touches.add(t);
+
+t = Map();
+t.put("day",90);
+t.put("priority","Normal");
+t.put("subject","T12 Day 90 Final text");
+t.put("script","Final touch: ask whether they went with someone else or the project got pushed. If there is no response, mark the deal Lost as a day-90 non-responder.");
 touches.add(t);
 
 // Create one task per touch
@@ -103,7 +134,7 @@ for each  touch in touches
 // Log that the cadence started
 noteMap = Map();
 noteMap.put("Note_Title","Follow-up cadence started");
-noteMap.put("Note_Content","Follow-up tasks created on " + baseDate.toString("yyyy-MM-dd") + ".");
+noteMap.put("Note_Content",touches.size().toString() + " follow-up tasks created on " + baseDate.toString("yyyy-MM-dd") + ".");
 noteMap.put("$se_module","Deals");
 noteMap.put("$related_to",dealId);
 zoho.crm.createRecord("Notes",noteMap);
