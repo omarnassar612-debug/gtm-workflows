@@ -22,7 +22,7 @@ I separate what ran in production from what is designed or in progress.
 
 - Average first response in business hours: about 1.5 minutes. Including after-hours leads: 42 minutes.
 - Appointment cancellations: about 50% down to about 10%. The new intake, appointment confirmations and scheduling coordination all contributed. The first-response text alone did not produce this.
-- Lead-to-booking rate on monthly cohorts: 58.6% (April) to 83.0% (July). Booking-to-close on mature cohorts fell from 48.8% to 20.2% over the same period, which moved the coaching focus from intake to the appointment stage.
+- Lead-to-booking ratio by month: 58.6% (April) to 83.0% (July). Booking-to-close fell from 48.8% (April) to 20.2% (June) on the months that have mostly resolved. July is not final. That moved the coaching focus from intake to the appointment stage. Full table in workflow 4.
 
 ## Conventions used across workflows
 
