@@ -1,0 +1,112 @@
+// start_followup_cadence.deluge
+// Zoho CRM custom function (Deluge), called by a workflow rule when a deal's Stage
+// changes to the post-consultation stage. Argument mapping: dealId = ${Deals.Id}
+//
+// Creates one CRM task per touch on the deal, assigned to the deal owner.
+//
+// Sanitized reference version. The touch copy is replaced by the purpose of each touch.
+// Offsets below are the original 14-day cadence. Add your later touches to the list.
+// Not compiled as published. Check field API names against your own CRM before use.
+//
+// Deluge notes:
+//   - Plain ASCII only in strings and comments.
+//   - No ternary operator. No nested map().put(). Build maps as separate variables.
+
+void automation.Start_Followup_Cadence(String dealId)
+{
+deal = zoho.crm.getRecordById("Deals",dealId.toLong());
+dealName = ifnull(deal.get("Deal_Name"),"");
+ownerMap = deal.get("Owner");
+ownerId = ownerMap.get("id");
+
+// Owner must be its own map, then passed into each task record
+ownerIdMap = Map();
+ownerIdMap.put("id",ownerId);
+
+baseDate = zoho.currentdate;
+
+// One entry per touch: day offset, priority, subject, what the advisor does
+touches = List();
+
+t = Map();
+t.put("day",0);
+t.put("priority","High");
+t.put("subject","T1 Day 0 Recap");
+t.put("script","Recap the visit, restate the outcome the homeowner wants, confirm the next step agreed on site.");
+touches.add(t);
+
+t = Map();
+t.put("day",1);
+t.put("priority","High");
+t.put("subject","T2 Day 1 Check-in call");
+t.put("script","Curious call: was anything unclear after the visit? Voicemail if no answer, short text 30 minutes later.");
+touches.add(t);
+
+t = Map();
+t.put("day",3);
+t.put("priority","High");
+t.put("subject","T3 Day 3 Outcome email and call");
+t.put("script","Send outcome email answering the common questions (timeline, process, what if I am not happy). Call the same afternoon.");
+touches.add(t);
+
+t = Map();
+t.put("day",5);
+t.put("priority","Normal");
+t.put("subject","T4 Day 5 Hold-up text");
+t.put("script","Short text asking what is the main thing holding them back. Log any reply in deal notes.");
+touches.add(t);
+
+t = Map();
+t.put("day",7);
+t.put("priority","High");
+t.put("subject","T5 Day 7 Call");
+t.put("script","Ask what it would mean if the project is not done by season end. Stop talking and let them answer.");
+touches.add(t);
+
+t = Map();
+t.put("day",10);
+t.put("priority","Normal");
+t.put("subject","T6 Day 10 Silent-prospect message");
+t.put("script","Pattern-interrupt message that makes it easy to reply with where things stand.");
+touches.add(t);
+
+t = Map();
+t.put("day",12);
+t.put("priority","High");
+t.put("subject","T7 Day 12 Direct call");
+t.put("script","State the real install availability. Give them a clean out either way.");
+touches.add(t);
+
+t = Map();
+t.put("day",14);
+t.put("priority","Normal");
+t.put("subject","T8 Day 14 Close the file");
+t.put("script","Close-the-file email. Quote stays on record. Move deal to future timeline.");
+touches.add(t);
+
+// Create one task per touch
+for each  touch in touches
+{
+	dueDate = baseDate.addDay(touch.get("day").toLong());
+	task = Map();
+	task.put("Subject",touch.get("subject") + " - " + dealName);
+	task.put("Due_Date",dueDate);
+	task.put("Priority",touch.get("priority"));
+	task.put("Status","Not Started");
+	task.put("$se_module","Deals");
+	task.put("$related_to",dealId);
+	task.put("Owner",ownerIdMap);
+	task.put("Description",touch.get("script"));
+	zoho.crm.createRecord("Tasks",task);
+}
+
+// Log that the cadence started
+noteMap = Map();
+noteMap.put("Note_Title","Follow-up cadence started");
+noteMap.put("Note_Content","Follow-up tasks created on " + baseDate.toString("yyyy-MM-dd") + ".");
+noteMap.put("$se_module","Deals");
+noteMap.put("$related_to",dealId);
+zoho.crm.createRecord("Notes",noteMap);
+
+info "Cadence created for " + dealName;
+}
