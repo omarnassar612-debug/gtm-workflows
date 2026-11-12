@@ -1,7 +1,7 @@
 # 3. Post-consultation follow-up cadence
 
 **Platform:** Zoho CRM (Deals module), Deluge, Workflow Rules
-**Status:** Production. Extended from an 8-touch, 14-day cadence to 12 touches over 90 days.
+**Status:** Production. Extended from an 8-touch, 14-day cadence to 12 touches over 90 days. The function in this repo is a rebuilt reference copy of the production one. It has not been compiled as published.
 
 ## Problem
 
@@ -30,10 +30,13 @@ Front-loaded in the first week, tapering after that.
 | 5 | 7 | Call: what does it mean if the project is not done by season end |
 | 6 | 10 | Pattern-interrupt message to a silent prospect |
 | 7 | 12 | Direct call with honest scheduling urgency |
-| 8 | 14 | Close-the-file message that leaves the door open |
-| 9 to 12 | to day 90 | Lower-pressure, value-led nurture touches |
+| 8 | 14 | Close-the-file text, sent first. Leaves the door open |
+| 9 | 14 | Close-the-file email, same day. Deal moves to Future Timeline |
+| 10 | 30 | Check-back text, low pressure |
+| 11 | 60 | Email: the quote is still on file, no need to start over |
+| 12 | 90 | Final text. No response means the deal is marked Lost |
 
-Days for touches 1 to 8 are the original 14-day cadence. Later touches are set in the production function and are not reproduced here.
+The published function creates all 12 tasks. It holds the purpose of each touch, not the full message copy.
 
 Deals stay in a future-timeline stage after day 14. "Lost" is reserved for day-90 non-responders or an explicit no.
 
