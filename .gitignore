@@ -3,6 +3,3 @@
 .env*
 secrets*
 *.key
-# Real batch output contains prospect data. Keep it out of the repo.
-workflows/05-claude-account-research/data/*.csv
-!workflows/05-claude-account-research/data/targets_schema.csv
