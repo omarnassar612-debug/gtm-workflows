@@ -1,6 +1,6 @@
 # GTM Workflows
 
-Revenue workflows I designed and built for a home-services sales team: lead intake, qualification, appointment reminders, post-consultation follow-up, reporting, and a Claude-assisted account research workflow.
+Revenue workflows I designed and built for a home-services sales team: lead intake, qualification, appointment reminders, post-consultation follow-up, and reporting.
 
 Each folder documents one workflow: the **trigger**, the **actions**, the **human review points**, and the **result**. Code is included where it is mine to share.
 
@@ -16,7 +16,6 @@ I separate what ran in production from what is designed or in progress.
 | 2 | [Consultation confirmations and reminders](workflows/02-consultation-reminders/) | Zoho CRM workflow rules, Zoho Flow, Deluge | Confirmation path in production and verified end to end. Timed reminders and cancellation notice designed and templated. |
 | 3 | [Post-consultation follow-up cadence](workflows/03-post-consultation-cadence/) | Zoho CRM, Deluge | Production. |
 | 4 | [Reporting and CRM data quality](workflows/04-reporting-and-data-quality/) | Zoho Analytics, COQL, Looker Studio, BigQuery, Excel | Production. |
-| 5 | [Claude-assisted account research and outreach](workflows/05-claude-account-research/) | Claude, Claude in Chrome, LinkedIn, Meta Ad Library | Designed. Research phase run, first outreach batch drafted, nothing sent or measured yet. |
 
 ## Measured results (workflow 1 and 2, production system)
 
@@ -33,7 +32,7 @@ I separate what ran in production from what is designed or in progress.
 
 ## Tools
 
-Zoho CRM, Zoho Flow, Deluge, Zoho Analytics, COQL, RingCentral, Looker Studio, BigQuery, Excel, Claude, Claude in Chrome.
+Zoho CRM, Zoho Flow, Deluge, Zoho Analytics, COQL, RingCentral, Looker Studio, BigQuery, Excel.
 
 ## Notes on the code
 
