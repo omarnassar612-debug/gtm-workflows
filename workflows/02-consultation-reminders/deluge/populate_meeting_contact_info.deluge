@@ -1,0 +1,109 @@
+// populate_meeting_contact_info.deluge
+// Zoho CRM custom function (Deluge), called by a workflow rule on Events create/edit.
+//
+// What it does:
+//   1. Finds the Contact or Lead linked to the meeting (Who_Id).
+//   2. Copies email and phone onto the meeting (Email_1, Phone_1).
+//   3. Normalizes the phone number to E.164 (+1XXXXXXXXXX for 10 or 11 digit NA numbers).
+//   4. Posts a JSON payload to a Zoho Flow webhook that sends the confirmation.
+//
+// Setup:
+//   - Create an organization variable named FLOW_WEBHOOK_URL holding the full Flow webhook URL.
+//     The URL contains an API key. Do not paste it into this file or commit it.
+//   - Field API names (Email_1, Phone_1) are custom fields on Events. Adjust for your CRM.
+//
+// Production payload also carries host_id, event_id, event_title, date, start_time, end_time.
+// Add them to the payload map below if your Flow builds the message text.
+
+string automation.WF_Populate_Meeting_Contact_Info(String meetingId)
+{
+mtg = zoho.crm.getRecordById("Events",meetingId.toLong());
+whoMap = mtg.get("Who_Id");
+if(whoMap == null)
+{
+	return "no who_id";
+}
+whoId = whoMap.get("id");
+email = "";
+rawPhone = "";
+firstName = "";
+found = false;
+contact = null;
+lead = null;
+try
+{
+	contact = zoho.crm.getRecordById("Contacts",whoId.toLong());
+	if(contact != null && contact.get("id") != null)
+	{
+		email = ifnull(contact.get("Email"),"");
+		rawPhone = ifnull(contact.get("Mobile"),"");
+		if(rawPhone == "")
+		{
+			rawPhone = ifnull(contact.get("Phone"),"");
+		}
+		firstName = ifnull(contact.get("First_Name"),"");
+		found = true;
+	}
+}
+catch (e)
+{
+	found = false;
+}
+if(found == false)
+{
+	try
+	{
+		lead = zoho.crm.getRecordById("Leads",whoId.toLong());
+		if(lead != null && lead.get("id") != null)
+		{
+			email = ifnull(lead.get("Email"),"");
+			rawPhone = ifnull(lead.get("Mobile"),"");
+			if(rawPhone == "")
+			{
+				rawPhone = ifnull(lead.get("Phone"),"");
+			}
+			firstName = ifnull(lead.get("First_Name"),"");
+			found = true;
+		}
+	}
+	catch (e2)
+	{
+		found = false;
+	}
+}
+if(found == false)
+{
+	return "no contact or lead";
+}
+digits = rawPhone.replaceAll("[^0-9]","",false);
+phone = "";
+if(digits.length() == 10)
+{
+	phone = "+1" + digits;
+}
+else if(digits.length() == 11 && digits.startsWith("1"))
+{
+	phone = "+" + digits;
+}
+else if(digits != "")
+{
+	phone = "+" + digits;
+}
+updateMap = Map();
+updateMap.put("Email_1",email);
+updateMap.put("Phone_1",phone);
+zoho.crm.updateRecord("Events",meetingId,updateMap);
+flowWebhook = zoho.crm.getOrgVariable("FLOW_WEBHOOK_URL");
+payload = Map();
+payload.put("first_name",firstName);
+payload.put("phone",phone);
+payload.put("email",email);
+response = invokeurl
+[
+	url :flowWebhook
+	type :POST
+	parameters :payload.toString()
+	headers :{"Content-Type":"application/json"}
+];
+return "done";
+}
