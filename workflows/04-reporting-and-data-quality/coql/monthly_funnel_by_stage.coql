@@ -1,0 +1,19 @@
+-- Monthly funnel inputs. Run both queries once per month window, then compute:
+--   lead to booking = booked / leads
+--   booking to close = closed / booked
+-- Replace the dates. Use your own timezone offset (-04:00 in summer, -05:00 after the November clock change).
+
+-- 1) Deals created in the month, grouped by current stage, across all pipelines.
+--    Do not filter to one pipeline: won deals move to a second pipeline and would be missed.
+--    Sum all rows for "leads". Bucket the stages into closed, lost and open.
+select Stage, COUNT(id)
+from Deals
+where Created_Time between '2026-08-01T00:00:00-04:00' and '2026-09-01T00:00:00-04:00'
+group by Stage;
+
+-- 2) Consultation events created in the same month.
+--    Counts rebookings too. Pull the rows and hand-classify if you need unique prospects.
+select COUNT(id)
+from Events
+where Created_Time between '2026-08-01T00:00:00-04:00' and '2026-09-01T00:00:00-04:00'
+  and Event_Title like '%onsult%';
